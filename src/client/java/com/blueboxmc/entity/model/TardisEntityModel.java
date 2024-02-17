@@ -78,7 +78,7 @@ public class TardisEntityModel extends EntityModel<TardisEntity> {
 
     @Override
     public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha) {
-        rdoor.render(matrices, vertices, light, overlay, red, green, blue, alpha);
+        rdoor.render(matrices, vertices, light, overlay, red, green, blue, 0.2f);
         ldoor.render(matrices, vertices, light, overlay, red, green, blue, alpha);
         body.render(matrices, vertices, light, overlay, red, green, blue, alpha);
         walls.render(matrices, vertices, light, overlay, red, green, blue, alpha);
