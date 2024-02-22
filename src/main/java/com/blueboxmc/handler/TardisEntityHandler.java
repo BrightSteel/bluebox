@@ -4,10 +4,16 @@ import com.blueboxmc.entity.TardisEntity;
 import com.blueboxmc.network.NetworkConstants;
 import com.blueboxmc.network.s2c.TardisEntityS2CPacket;
 import com.blueboxmc.state.DoorState;
+import com.blueboxmc.util.PlayerUtil;
+import com.blueboxmc.world.GlobalPersistentState;
+import com.blueboxmc.world.TardisStorageHandler;
+import com.blueboxmc.world.storage.TardisStorage;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import qouteall.imm_ptl.core.portal.Portal;
@@ -18,7 +24,7 @@ import java.util.List;
 
 public class TardisEntityHandler {
 
-    private TardisEntity entity;
+    private final TardisEntity entity;
 
     public TardisEntityHandler(TardisEntity entity) {
         this.entity = entity;
@@ -99,12 +105,48 @@ public class TardisEntityHandler {
         }
     }
 
-    private Portal spawnPortal(Vec3d origin, Vec3d destination, Vec3d axisW, Vec3d axisH, double width, double height, boolean teleportable) {
-        return spawnPortal(origin, destination, axisW, axisH, width, height, teleportable, false);
+    public void handleRightClickInteraction(ServerPlayerEntity player) {
+        if (!isTardisClaimed() || player.isSneaking()) {
+            // open tardis info screen
+            PlayerUtil.sendOpenScreenPacket(player, "tardis_claim_screen");
+        } else if (isTardisOwnedBy(player)) {
+            openTardisDoors();
+        } else {
+            player.sendMessage(Text.of("TARDIS is locked!"));
+        }
+    }
+
+    private boolean isTardisClaimed() {
+        return getTardisStorage().getOwnerUUID() != null;
+    }
+
+    private boolean isTardisOwnedBy(ServerPlayerEntity player) {
+        return getTardisStorage().getOwnerUUID().equals(player.getUuidAsString());
+    }
+
+    private TardisStorage getTardisStorage() {
+        // want to call this whenever we access data to make sure it is up-to-date
+        // safe to call repeatedly
+        return TardisStorageHandler.getTardisStorage(entity.getServer(), entity.getUuid());
+    }
+
+    // TODO send packet to update doorState on observing clients
+    private void openTardisDoors() {
+        switch (entity.getDoorState()) {
+            case OPEN, OPENING -> entity.setDoorState(DoorState.CLOSING);
+            case CLOSED, CLOSING -> {
+                spawnPortals(100, 120.4, 100);
+                entity.setDoorState(DoorState.OPENING);
+            }
+        }
+    }
+
+    private void spawnPortal(Vec3d origin, Vec3d destination, Vec3d axisW, Vec3d axisH, double width, double height, boolean teleportable) {
+        spawnPortal(origin, destination, axisW, axisH, width, height, teleportable, false);
     }
 
 
-    private Portal spawnPortal(Vec3d origin, Vec3d destination, Vec3d axisW, Vec3d axisH, double width, double height, boolean teleportable, boolean rotateBody) {
+    private void spawnPortal(Vec3d origin, Vec3d destination, Vec3d axisW, Vec3d axisH, double width, double height, boolean teleportable, boolean rotateBody) {
         Portal portal = Portal.ENTITY_TYPE.create(entity.getEntityWorld());
         if (portal != null) {
             portal.setTeleportable(teleportable);
@@ -120,6 +162,5 @@ public class TardisEntityHandler {
             }
             portal.getWorld().spawnEntity(portal);
         }
-        return portal;
     }
 }

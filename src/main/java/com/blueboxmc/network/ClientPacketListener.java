@@ -1,5 +1,6 @@
 package com.blueboxmc.network;
 
+import com.blueboxmc.network.s2c.OpenScreenS2CPacket;
 import com.blueboxmc.network.s2c.TardisEntityS2CPacket;
 
 /**
@@ -8,4 +9,6 @@ import com.blueboxmc.network.s2c.TardisEntityS2CPacket;
 public interface ClientPacketListener {
 
     void onTardisEntityUpdate(TardisEntityS2CPacket packet);
+
+    void onOpenScreen(OpenScreenS2CPacket packet);
 }

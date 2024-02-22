@@ -18,7 +18,8 @@ repositories {
 	// for more information about repositories.
 	maven { url 'https://jitpack.io' }
 	maven { url 'https://maven.shedaniel.me' }
-	maven {url = "https://api.modrinth.com/maven"}
+	maven { url "https://api.modrinth.com/maven"}
+	maven { url 'https://maven.wispforest.io' }
 }
 
 loom {
@@ -46,6 +47,13 @@ dependencies {
 	// https://projectlombok.org
 	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+	// db - todo for server use
+//	modImplementation 'mysql:mysql-connector-java:8.0.33'
+//	modImplementation "org.xerial:sqlite-jdbc:3.45.1.0"
+//	modImplementation 'com.zaxxer:HikariCP:5.1.0'
+
+	modImplementation "io.wispforest:owo-lib:${project.owo_version}"
+	include "io.wispforest:owo-sentinel:${project.owo_version}"
 }
 
 processResources {

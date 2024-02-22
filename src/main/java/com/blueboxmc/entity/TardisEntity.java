@@ -2,6 +2,8 @@ package com.blueboxmc.entity;
 
 import com.blueboxmc.handler.TardisEntityHandler;
 import com.blueboxmc.state.DoorState;
+import com.blueboxmc.util.PlayerUtil;
+import com.blueboxmc.world.GlobalPersistentState;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.entity.Entity;
@@ -45,14 +47,8 @@ public class TardisEntity extends PathAwareEntity {
         if (hand == Hand.OFF_HAND) {
             return ActionResult.PASS; // ignore off-hand, otherwise runs twice
         }
-        switch (doorState) {
-            case OPEN, OPENING -> {
-                doorState = DoorState.CLOSING;
-            }
-            case CLOSED, CLOSING -> {
-                tardisEntityHandler.spawnPortals(100, 120.4, 100);
-                doorState = DoorState.OPENING;
-            }
+        if (player instanceof ServerPlayerEntity serverPlayer) {
+            tardisEntityHandler.handleRightClickInteraction(serverPlayer);
         }
         return ActionResult.PASS;
     }
