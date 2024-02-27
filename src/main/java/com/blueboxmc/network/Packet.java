@@ -2,11 +2,11 @@ package com.blueboxmc.network;
 
 import net.minecraft.network.PacketByteBuf;
 
-public interface Packet {
+public interface Packet<T extends PacketListener> {
 
     void read(PacketByteBuf buf);
 
     PacketByteBuf write();
 
-    void apply(ClientPacketListener clientPacketListener);
+    void apply(T packetListener);
 }

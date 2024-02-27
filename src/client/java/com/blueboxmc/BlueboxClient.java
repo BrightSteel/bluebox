@@ -3,6 +3,7 @@ package com.blueboxmc;
 import com.blueboxmc.entity.model.TardisEntityModel;
 import com.blueboxmc.entity.renderer.TardisEntityRenderer;
 import com.blueboxmc.network.ClientPacketReceivers;
+import com.blueboxmc.schedule.ClientScheduleHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,6 +15,8 @@ import net.minecraft.util.Identifier;
 @Environment(EnvType.CLIENT)
 public class BlueboxClient implements ClientModInitializer {
 
+	public static ClientScheduleHandler clientScheduleHandler;
+
 	public static final EntityModelLayer MODEL_TARDIS_LAYER = new EntityModelLayer(new Identifier(Bluebox.MODID, "tardis"), "main");
 
 	@Override
@@ -23,5 +26,6 @@ public class BlueboxClient implements ClientModInitializer {
 		EntityModelLayerRegistry.registerModelLayer(MODEL_TARDIS_LAYER, TardisEntityModel::getTexturedModelData);
 
 		ClientPacketReceivers.registerGlobalReceivers();
+		clientScheduleHandler = new ClientScheduleHandler();
 	}
 }

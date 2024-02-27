@@ -8,26 +8,34 @@ import lombok.NoArgsConstructor;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.PacketByteBuf;
 
+import java.util.UUID;
+
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor // when building by reading buf
-public class OpenScreenS2CPacket implements Packet {
+@NoArgsConstructor
+public class OpenTardisInfoScreenS2CPacket implements Packet<ClientPacketListener> {
 
-    private String screenName;
+    private UUID tardisUUID;
+    private String tardisNickname;
+    private String ownerUsername;
 
     @Override
     public void read(PacketByteBuf buf) {
-        this.screenName = buf.readString();
+        this.tardisUUID = buf.readUuid();
+        this.tardisNickname = buf.readString();
+        this.ownerUsername = buf.readString();
     }
 
     @Override
     public PacketByteBuf write() {
         return PacketByteBufs.create()
-                .writeString(screenName);
+                .writeUuid(tardisUUID)
+                .writeString(tardisNickname)
+                .writeString(ownerUsername);
     }
 
     @Override
     public void apply(ClientPacketListener clientPacketListener) {
-        clientPacketListener.onOpenScreen(this);
+        clientPacketListener.onOpenTardisInfoScreen(this);
     }
 }

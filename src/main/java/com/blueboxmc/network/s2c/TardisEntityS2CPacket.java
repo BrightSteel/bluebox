@@ -8,10 +8,9 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.PacketByteBuf;
 
 @Getter
-@Setter(AccessLevel.PRIVATE)
 @AllArgsConstructor
-@NoArgsConstructor // when building by reading buf
-public class TardisEntityS2CPacket implements Packet {
+@NoArgsConstructor
+public class TardisEntityS2CPacket implements Packet<ClientPacketListener> {
 
     private int entityId;
     private float doorOpenValue;

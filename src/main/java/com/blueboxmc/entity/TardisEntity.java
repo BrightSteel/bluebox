@@ -2,8 +2,6 @@ package com.blueboxmc.entity;
 
 import com.blueboxmc.handler.TardisEntityHandler;
 import com.blueboxmc.state.DoorState;
-import com.blueboxmc.util.PlayerUtil;
-import com.blueboxmc.world.GlobalPersistentState;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.entity.Entity;
@@ -56,11 +54,17 @@ public class TardisEntity extends PathAwareEntity {
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
+        nbt.putString("doorState", doorState.toString());
+        nbt.putFloat("doorOpenValue", doorOpenValue);
     }
 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
+        if (nbt.contains("doorState")) {
+            this.doorState = DoorState.valueOf(nbt.getString("doorState"));
+        }
+        this.doorOpenValue = nbt.getFloat("doorOpenValue");
     }
 
     @Override

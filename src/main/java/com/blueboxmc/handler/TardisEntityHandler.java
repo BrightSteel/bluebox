@@ -1,16 +1,14 @@
 package com.blueboxmc.handler;
 
+import com.blueboxmc.Bluebox;
+import com.blueboxmc.database.entry.TardisEntry;
 import com.blueboxmc.entity.TardisEntity;
 import com.blueboxmc.network.NetworkConstants;
 import com.blueboxmc.network.s2c.TardisEntityS2CPacket;
 import com.blueboxmc.state.DoorState;
-import com.blueboxmc.util.PlayerUtil;
-import com.blueboxmc.world.GlobalPersistentState;
-import com.blueboxmc.world.TardisStorageHandler;
-import com.blueboxmc.world.storage.TardisStorage;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -108,7 +106,11 @@ public class TardisEntityHandler {
     public void handleRightClickInteraction(ServerPlayerEntity player) {
         if (!isTardisClaimed() || player.isSneaking()) {
             // open tardis info screen
-            PlayerUtil.sendOpenScreenPacket(player, "tardis_claim_screen");
+            new TardisScreenHandler(
+                    player,
+                    entity.getUuid(),
+                    NetworkConstants.OPEN_TARDIS_INFO_SCREEN_S2C
+            ).openScreen();
         } else if (isTardisOwnedBy(player)) {
             openTardisDoors();
         } else {
@@ -117,20 +119,19 @@ public class TardisEntityHandler {
     }
 
     private boolean isTardisClaimed() {
-        return getTardisStorage().getOwnerUUID() != null;
+        TardisEntry tardisEntry = getTardisEntry();
+        return tardisEntry != null && tardisEntry.getOwnerUUID() != null;
     }
 
     private boolean isTardisOwnedBy(ServerPlayerEntity player) {
-        return getTardisStorage().getOwnerUUID().equals(player.getUuidAsString());
+        TardisEntry tardisEntry = getTardisEntry();
+        return tardisEntry != null && tardisEntry.getOwnerUUID().equals(player.getUuidAsString());
     }
 
-    private TardisStorage getTardisStorage() {
-        // want to call this whenever we access data to make sure it is up-to-date
-        // safe to call repeatedly
-        return TardisStorageHandler.getTardisStorage(entity.getServer(), entity.getUuid());
+    private TardisEntry getTardisEntry() {
+        return Bluebox.tardisEntryCache.awaitGet(entity.getUuid());
     }
 
-    // TODO send packet to update doorState on observing clients
     private void openTardisDoors() {
         switch (entity.getDoorState()) {
             case OPEN, OPENING -> entity.setDoorState(DoorState.CLOSING);
@@ -139,6 +140,11 @@ public class TardisEntityHandler {
                 entity.setDoorState(DoorState.OPENING);
             }
         }
+        sendObservedUpdatePacket();
+    }
+
+    private void sendObservedUpdatePacket() {
+        PlayerLookup.tracking(entity).forEach(this::sendUpdatePacket);
     }
 
     private void spawnPortal(Vec3d origin, Vec3d destination, Vec3d axisW, Vec3d axisH, double width, double height, boolean teleportable) {

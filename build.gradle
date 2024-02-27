@@ -47,10 +47,12 @@ dependencies {
 	// https://projectlombok.org
 	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
-	// db - todo for server use
-//	modImplementation 'mysql:mysql-connector-java:8.0.33'
-//	modImplementation "org.xerial:sqlite-jdbc:3.45.1.0"
-//	modImplementation 'com.zaxxer:HikariCP:5.1.0'
+
+	// sql
+	modImplementation 'mysql:mysql-connector-java:8.0.33'
+	modImplementation "org.xerial:sqlite-jdbc:3.45.1.0"
+	//cache
+	implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
 
 	modImplementation "io.wispforest:owo-lib:${project.owo_version}"
 	include "io.wispforest:owo-sentinel:${project.owo_version}"
