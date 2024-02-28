@@ -2,25 +2,27 @@ package com.blueboxmc.world;
 
 import com.blueboxmc.Bluebox;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE) // should be accessing through getPersistentState method
-public class TardisWorldPersistentState extends PersistentState {
+public class GlobalPersistentState extends PersistentState {
 
+    @Getter
     private int lastZ;
 
-    private static final Type<TardisWorldPersistentState> TYPE = new Type<>(
-            TardisWorldPersistentState::new, // create if no data yet exists
-            TardisWorldPersistentState::generateFromNBT, // otherwise construct from NBT
+    private static final Type<GlobalPersistentState> TYPE = new Type<>(
+            GlobalPersistentState::new, // create if no data yet exists
+            GlobalPersistentState::generateFromNBT, // otherwise construct from NBT
             null // not needed
     );
 
-    public static TardisWorldPersistentState getPersistentState(ServerWorld tardisWorld) {
-        PersistentStateManager persistenceManger = tardisWorld.getPersistentStateManager();
+    public static GlobalPersistentState getPersistentState(MinecraftServer server) {
+        PersistentStateManager persistenceManger = server.getOverworld().getPersistentStateManager();
         return persistenceManger.getOrCreate(TYPE, Bluebox.MODID);
     }
 
@@ -35,8 +37,8 @@ public class TardisWorldPersistentState extends PersistentState {
         return nbt;
     }
 
-    private static TardisWorldPersistentState generateFromNBT(NbtCompound tag) {
-        TardisWorldPersistentState state = new TardisWorldPersistentState();
+    private static GlobalPersistentState generateFromNBT(NbtCompound tag) {
+        GlobalPersistentState state = new GlobalPersistentState();
         state.lastZ = tag.getInt("lastZ");
         return state;
     }
