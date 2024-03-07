@@ -1,0 +1,10 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "bluebox:tardis/2013/pipes_side"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}]
+  }
+}

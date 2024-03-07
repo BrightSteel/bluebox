@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "bluebox:items/tardis/2013/chair"
+  }
+}

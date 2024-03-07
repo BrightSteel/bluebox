@@ -5,8 +5,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import net.minecraft.entity.Entity;
 
-@Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@EqualsAndHashCode(callSuper = true)
+@Data
 @Accessors(chain = true)
 public class LocationEntry extends JsonEntry {
     private double x, y, z;

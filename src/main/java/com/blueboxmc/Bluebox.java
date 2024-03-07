@@ -1,5 +1,6 @@
 package com.blueboxmc;
 
+import com.blueboxmc.block.BlueBoxBlocks;
 import com.blueboxmc.database.DatabaseConnector;
 import com.blueboxmc.database.DatabasePreparation;
 import com.blueboxmc.database.Tables;
@@ -51,6 +52,8 @@ public class Bluebox implements ModInitializer {
 		ServerPacketReceivers.registerGlobalReceivers();
 
 		ServerLifecycleEvents.SERVER_STARTED.register(this::initializeWithServer);
+
+		BlueBoxBlocks.registerBlocks();
 	}
 
 	private void initializeWithServer(MinecraftServer server) {

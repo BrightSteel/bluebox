@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_column",
+  "textures": {
+    "end": "bluebox:block/tardis/2010/floor_sub",
+    "side": "bluebox:block/tardis/2013/pillar"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "bluebox:block/tardis/2013/chair.obj" },
+    "facing=east": { "model": "bluebox:block/tardis/2013/chair.obj", "y": 90 },
+    "facing=south": { "model": "bluebox:block/tardis/2013/chair.obj", "y": 180 },
+    "facing=west": { "model": "bluebox:block/tardis/2013/chair.obj", "y": 270 }
+  }
+}

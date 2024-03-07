@@ -24,7 +24,7 @@ public class TardisHandler {
     }
 
     public boolean claimTardis(ServerPlayerEntity serverPlayer) {
-        TardisEntry tardisEntry = Bluebox.tardisEntryCache.awaitGet(entityUUID);
+        TardisEntry tardisEntry = getTardisEntry();
         Entity tardisEntity = serverPlayer.getServerWorld().getEntity(entityUUID);
         PlayerMessageHandler messageHandler = new PlayerMessageHandler(serverPlayer);
 
@@ -61,7 +61,7 @@ public class TardisHandler {
 
     // todo take in interior type
     public boolean generateTardisInterior(ServerPlayerEntity serverPlayer) {
-        TardisEntry tardisEntry = Bluebox.tardisEntryCache.awaitGet(entityUUID);
+        TardisEntry tardisEntry = getTardisEntry();
         PlayerMessageHandler messageHandler = new PlayerMessageHandler(serverPlayer);
 
         if (tardisEntry.getInteriorSpawnLocation() != null) {
@@ -77,13 +77,57 @@ public class TardisHandler {
 
         GlobalPersistentState globalPersistentState = GlobalPersistentState.getPersistentState(server);
         int spawnLocation = globalPersistentState.getLastZ() + INTERIOR_SPACE;
-        new StructureHandler("capaldi").pasteStructure(
+        new StructureHandler("capaldi_interior").pasteStructure(
                 server, 
                 new BlockPos(0, 0, spawnLocation),
                 server.getWorld(Bluebox.TARDIS_WORLD_KEY)
         );
+        // update lastZ
         globalPersistentState.updateLastZ(spawnLocation);
-        messageHandler.sendMessage("Generated TARDIS successfully!");
-        return true;
+        // update interiorSpawnLocation
+        CompletableFuture<Boolean> success = CompletableFuture.supplyAsync(() -> Tables.tardisTable.updateInterior(
+                tardisEntry
+                        .setInteriorSpawnLocation(new LocationEntry()
+                                .setX(0)
+                                .setY(0)
+                                .setZ(spawnLocation)
+                                .setYaw(0)
+                                .setPitch(0))
+                        .setInteriorBoundMin(spawnLocation - (INTERIOR_SPACE / 2))
+                        .setInteriorBoundMax(spawnLocation + (INTERIOR_SPACE / 2))
+        ));
+        // return result
+        try {
+            if (success.get()) {
+                Bluebox.tardisEntryCache.remove(entityUUID);
+                messageHandler.sendMessage("Generated TARDIS successfully!");
+                return true;
+            }
+        } catch (Exception e) {
+            Bluebox.LOGGER.error("Exception updating tardis entry", e);
+        }
+        messageHandler.sendError("Failed to generate TARDIS");
+        return false;
+    }
+
+    public boolean isTardisInteriorGenerated() {
+        TardisEntry tardisEntry = getTardisEntry();
+        return tardisEntry.getInteriorSpawnLocation() != null;
+    }
+
+    public boolean isTardisClaimed() {
+        System.out.println("Checking: " + entityUUID);
+        TardisEntry tardisEntry = getTardisEntry();
+        System.out.println(tardisEntry);
+        return tardisEntry != null && tardisEntry.getOwnerUUID() != null;
+    }
+
+    public boolean isTardisOwnedBy(ServerPlayerEntity player) {
+        TardisEntry tardisEntry = getTardisEntry();
+        return tardisEntry != null && tardisEntry.getOwnerUUID().equals(player.getUuidAsString());
+    }
+
+    private TardisEntry getTardisEntry() {
+        return Bluebox.tardisEntryCache.awaitGet(entityUUID);
     }
 }

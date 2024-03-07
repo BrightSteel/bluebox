@@ -5,19 +5,26 @@ import com.blueboxmc.state.DoorState;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class TardisEntity extends PathAwareEntity {
 
     private final TardisEntityHandler tardisEntityHandler;
+    private boolean isInitialTick = true;
 
     @Getter @Setter
     private DoorState doorState = DoorState.CLOSED;
@@ -32,6 +39,10 @@ public class TardisEntity extends PathAwareEntity {
     @Override
     public void tick() {
         super.tick();
+        if (isInitialTick && !getWorld().isClient) {
+            tardisEntityHandler.onSpawn();
+            isInitialTick = false;
+        }
         tardisEntityHandler.handleDoorState();
     }
 

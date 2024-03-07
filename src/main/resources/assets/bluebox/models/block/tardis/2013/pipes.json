@@ -1,0 +1,6 @@
+{
+  "parent": "block/carpet",
+  "textures": {
+    "wool": "bluebox:block/tardis/2013/pipes"
+  }
+}

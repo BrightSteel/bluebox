@@ -2,6 +2,7 @@ package com.blueboxmc.handler;
 
 import com.blueboxmc.Bluebox;
 import com.blueboxmc.database.entry.TardisEntry;
+import com.blueboxmc.database.entry.nested.LocationEntry;
 import com.blueboxmc.entity.TardisEntity;
 import com.blueboxmc.network.NetworkConstants;
 import com.blueboxmc.network.s2c.TardisEntityS2CPacket;
@@ -22,10 +23,16 @@ import java.util.List;
 
 public class TardisEntityHandler {
 
+    private TardisHandler tardisHandler;
     private final TardisEntity entity;
 
     public TardisEntityHandler(TardisEntity entity) {
         this.entity = entity;
+    }
+
+    public void onSpawn() {
+        // need to wait until spawned in world as uuid seems to be incorrect beforehand
+        this.tardisHandler = new TardisHandler(entity.getUuid());
     }
 
     public void sendUpdatePacket(ServerPlayerEntity player) {
@@ -33,42 +40,6 @@ public class TardisEntityHandler {
                 player,
                 NetworkConstants.TARDIS_ENTITY_S2C,
                 new TardisEntityS2CPacket(entity.getId(), entity.getDoorOpenValue(), entity.getDoorState()).write()
-        );
-    }
-
-    public void spawnPortals(double destX, double destY, double destZ) {
-        // main portal
-        spawnPortal(
-                new Vec3d(entity.getX(), entity.getY() + 1.42, entity.getZ()),
-                new Vec3d(destX, destY, destZ),
-                new Vec3d(1, 0, 0), // axisW
-                new Vec3d(0, 1, 0), // axisH
-                1.5,
-                2.55,
-                true
-        );
-
-        // bottom portal
-        spawnPortal(
-                new Vec3d(entity.getX(), entity.getY() + 0.128, entity.getZ()),
-                new Vec3d(destX, destY - 1.30, destZ),
-                new Vec3d(0, 0, 1),
-                new Vec3d(1, 0, 0),
-                1.50,
-                1.5,
-                false
-        );
-
-        // top portal
-        spawnPortal(
-                new Vec3d(entity.getX(), entity.getY() + 2.685, entity.getZ()),
-                new Vec3d(destX, destY + 1.5, destX),
-                new Vec3d(0, 0, 1),
-                new Vec3d(1, 0, 0),
-                1.50,
-                1.5,
-                false,
-                true
         );
     }
 
@@ -104,43 +75,94 @@ public class TardisEntityHandler {
     }
 
     public void handleRightClickInteraction(ServerPlayerEntity player) {
-        if (!isTardisClaimed() || player.isSneaking()) {
+        System.out.println("Right id: " + entity.getUuid());
+        if (!tardisHandler.isTardisClaimed() || player.isSneaking()) {
             // open tardis info screen
             new TardisScreenHandler(
                     player,
                     entity.getUuid(),
                     NetworkConstants.OPEN_TARDIS_INFO_SCREEN_S2C
             ).openScreen();
-        } else if (isTardisOwnedBy(player)) {
-            openTardisDoors();
+        } else if (tardisHandler.isTardisOwnedBy(player)) {
+            handleOwnerInteraction(player);
         } else {
             player.sendMessage(Text.of("TARDIS is locked!"));
         }
     }
 
-    private boolean isTardisClaimed() {
-        TardisEntry tardisEntry = getTardisEntry();
-        return tardisEntry != null && tardisEntry.getOwnerUUID() != null;
-    }
+    private void handleOwnerInteraction(ServerPlayerEntity player) {
+        if (!tardisHandler.isTardisInteriorGenerated()) {
+           if (!tardisHandler.generateTardisInterior(player)) {
+               return;
+           }
 
-    private boolean isTardisOwnedBy(ServerPlayerEntity player) {
-        TardisEntry tardisEntry = getTardisEntry();
-        return tardisEntry != null && tardisEntry.getOwnerUUID().equals(player.getUuidAsString());
-    }
-
-    private TardisEntry getTardisEntry() {
-        return Bluebox.tardisEntryCache.awaitGet(entity.getUuid());
+        }
+        openTardisDoors();
     }
 
     private void openTardisDoors() {
         switch (entity.getDoorState()) {
             case OPEN, OPENING -> entity.setDoorState(DoorState.CLOSING);
             case CLOSED, CLOSING -> {
-                spawnPortals(100, 120.4, 100);
+                openPortal();
                 entity.setDoorState(DoorState.OPENING);
             }
         }
         sendObservedUpdatePacket();
+    }
+
+    private void openPortal() {
+        LocationEntry interiorSpawnLocation = Bluebox.tardisEntryCache
+                .awaitGet(entity.getUuid())
+                .getInteriorSpawnLocation();
+        // todo only grab portaloffset on generation and store in db as spawn loc
+        Vec3d portalOffset = getPortalOffset();
+        spawnPortals(
+                interiorSpawnLocation.getX() + portalOffset.x,
+                interiorSpawnLocation.getY() + portalOffset.y,
+                interiorSpawnLocation.getZ() + portalOffset.z
+        );
+    }
+
+    private void spawnPortals(double destX, double destY, double destZ) {
+        // main portal
+        spawnPortal(
+                new Vec3d(entity.getX(), entity.getY() + 1.42, entity.getZ()),
+                new Vec3d(destX, destY, destZ),
+                new Vec3d(1, 0, 0), // axisW
+                new Vec3d(0, 1, 0), // axisH
+                1.5,
+                2.55,
+                true
+        );
+
+        // bottom portal
+        spawnPortal(
+                new Vec3d(entity.getX(), entity.getY() + 0.128, entity.getZ()),
+                new Vec3d(destX, destY - 1.30, destZ),
+                new Vec3d(0, 0, 1),
+                new Vec3d(1, 0, 0),
+                1.50,
+                1.5,
+                false
+        );
+
+        // top portal
+        spawnPortal(
+                new Vec3d(entity.getX(), entity.getY() + 2.685, entity.getZ()),
+                new Vec3d(destX, destY + 1.26, destZ),
+                new Vec3d(0, 0, 1),
+                new Vec3d(1, 0, 0),
+                1.50,
+                1.5,
+                false,
+                true
+        );
+    }
+
+    private Vec3d getPortalOffset() {
+        // just hard-coding this for now, but will change depending on interior
+        return new Vec3d(17.95, 4.9, 8.9);
     }
 
     private void sendObservedUpdatePacket() {
@@ -157,8 +179,9 @@ public class TardisEntityHandler {
         if (portal != null) {
             portal.setTeleportable(teleportable);
             portal.setOriginPos(origin);
-            portal.setDestinationDimension(World.OVERWORLD);
+            portal.setDestinationDimension(Bluebox.TARDIS_WORLD_KEY);
             portal.setDestination(destination);
+            portal.setRotationTransformation(DQuaternion.rotationByDegrees(new Vec3d(0, 1, 0), 180));
             portal.setOrientationAndSize(axisW, axisH, width, height);
             if (rotateBody) {
                 PortalManipulation.rotatePortalBody(

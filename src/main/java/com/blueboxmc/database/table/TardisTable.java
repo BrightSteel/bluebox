@@ -57,17 +57,20 @@ public class TardisTable extends Table {
         return true;
     }
 
-    public boolean updateEntry(TardisEntry tardisEntry) {
+    public boolean updateInterior(TardisEntry tardisEntry) {
+        System.out.println("Updating: " + tardisEntry);
         try {
             String update = """
                         UPDATE tardis SET
-                            owner_uuid = ?
-                            AND nickname = ?
+                            interior_bound_min = ?,
+                            interior_bound_max = ?,
+                            interior_spawn_location = ?
                         WHERE entity_uuid = ?
                         """;
             Bluebox.dbConnector.executeUpdate(update,
-                    tardisEntry.getOwnerUUID(),
-                    tardisEntry.getNickname(),
+                    tardisEntry.getInteriorBoundMin(),
+                    tardisEntry.getInteriorBoundMax(),
+                    tardisEntry.getInteriorSpawnLocation().toJson(),
                     tardisEntry.getEntityUUID()
             );
         } catch (SQLException e) {

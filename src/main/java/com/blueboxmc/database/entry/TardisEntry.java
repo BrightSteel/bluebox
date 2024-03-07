@@ -1,16 +1,14 @@
 package com.blueboxmc.database.entry;
 
 import com.blueboxmc.database.entry.nested.LocationEntry;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@Getter @Setter
-@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@Data
 @Accessors(chain = true)
 public class TardisEntry extends DatabaseEntry {
     private String entityUUID, ownerUUID, nickname;

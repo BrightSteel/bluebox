@@ -1,0 +1,8 @@
+{
+  "parent": "block/slab",
+  "textures": {
+    "bottom": "bluebox:block/tardis/2013/bottom_blue",
+    "top": "bluebox:block/tardis/2013/top_gray",
+    "side": "bluebox:block/tardis/2013/platform_lit"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "type=bottom,waterlogged=false": {
+      "model": "bluebox:block/tardis/2013/platform_slab"
+    },
+    "type=bottom,waterlogged=true": {
+      "model": "bluebox:block/tardis/2013/platform_slab"
+    },
+    "type=double,waterlogged=false": {
+      "model": "bluebox:block/tardis/2013/platform"
+    },
+    "type=double,waterlogged=true": {
+      "model": "bluebox:block/tardis/2013/platform"
+    },
+    "type=top,waterlogged=false": {
+      "model": "bluebox:block/tardis/2013/platform_slab_top"
+    },
+    "type=top,waterlogged=true": {
+      "model": "bluebox:block/tardis/2013/platform_slab_top"
+    }
+  }
+}

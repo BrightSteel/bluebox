@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "bluebox:block/tardis/2013/wall", "y": 90 },
+    "facing=east": { "model": "bluebox:block/tardis/2013/wall", "y":  180 },
+    "facing=south": { "model": "bluebox:block/tardis/2013/wall", "y": 270 },
+    "facing=west": { "model": "bluebox:block/tardis/2013/wall" }
+  }
+}

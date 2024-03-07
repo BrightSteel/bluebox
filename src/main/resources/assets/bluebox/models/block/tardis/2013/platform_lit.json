@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "particle": "bluebox:block/tardis/2013/ceiling",
+    "north": "bluebox:block/tardis/2013/platform_lit",
+    "south": "bluebox:block/tardis/2013/platform_lit",
+    "east": "bluebox:block/tardis/2013/platform_lit",
+    "west": "bluebox:block/tardis/2013/platform_lit",
+    "up": "bluebox:block/tardis/2013/top_gray",
+    "down": "bluebox:block/tardis/2013/bottom_blue"
+  }
+}

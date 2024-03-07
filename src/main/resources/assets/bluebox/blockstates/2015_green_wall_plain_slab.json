@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "bluebox:block/tardis/2015/green_wall_plain_slab"
+    },
+    "type=double": {
+      "model": "bluebox:block/tardis/2015/green_wall_plain_bottom"
+    },
+    "type=top": {
+      "model": "bluebox:block/tardis/2015/green_wall_plain_top"
+    }
+  }
+}
