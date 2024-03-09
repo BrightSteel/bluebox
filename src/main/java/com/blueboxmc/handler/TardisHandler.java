@@ -4,6 +4,7 @@ import com.blueboxmc.Bluebox;
 import com.blueboxmc.database.Tables;
 import com.blueboxmc.database.entry.TardisEntry;
 import com.blueboxmc.database.entry.nested.LocationEntry;
+import com.blueboxmc.util.HashUtil;
 import com.blueboxmc.util.TardisUtil;
 import com.blueboxmc.world.GlobalPersistentState;
 import net.minecraft.entity.Entity;
@@ -13,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class TardisHandler {
 
@@ -41,7 +43,7 @@ public class TardisHandler {
                 .supplyAsync(() -> Tables.tardisTable.createEntry(new TardisEntry()
                         .setEntityUUID(entityUUID.toString())
                         .setOwnerUUID(serverPlayer.getUuidAsString())
-                        .setNickname(TardisUtil.getDefaultNickname(entityUUID))
+                        .setNickname(TardisUtil.getDefaultNickname(entityUUID.toString()))
                         .setEntityLocation(LocationEntry.fromEntityLocation(tardisEntity))
                 ));
         try {

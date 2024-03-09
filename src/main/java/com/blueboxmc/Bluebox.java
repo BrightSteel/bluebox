@@ -6,8 +6,10 @@ import com.blueboxmc.database.DatabasePreparation;
 import com.blueboxmc.database.Tables;
 import com.blueboxmc.database.cache.PlayerEntryCache;
 import com.blueboxmc.database.cache.TardisEntryCache;
+import com.blueboxmc.document.DocumentHandler;
 import com.blueboxmc.entity.TardisEntity;
 import com.blueboxmc.network.ServerPacketReceivers;
+import lombok.Getter;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -31,6 +33,8 @@ public class Bluebox implements ModInitializer {
 	public static final String MODID = "bluebox";
     public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
 	public static final RegistryKey<World> TARDIS_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(MODID, "tardis"));
+	@Getter
+	private static String[] tardisNames;
 
 	public static final EntityType<TardisEntity> TARDIS_ENTITY = Registry.register(
 			Registries.ENTITY_TYPE,
@@ -54,6 +58,9 @@ public class Bluebox implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STARTED.register(this::initializeWithServer);
 
 		BlueBoxBlocks.registerBlocks();
+
+		// let's just load all name options at start-up, if it ever becomes too large might want to rethink this
+		tardisNames = new DocumentHandler<>("tardis_names", String[].class).getDocument();
 	}
 
 	private void initializeWithServer(MinecraftServer server) {

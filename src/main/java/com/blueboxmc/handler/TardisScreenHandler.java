@@ -1,7 +1,6 @@
 package com.blueboxmc.handler;
 
 import com.blueboxmc.Bluebox;
-import com.blueboxmc.database.entry.PlayerEntry;
 import com.blueboxmc.database.entry.TardisEntry;
 import com.blueboxmc.network.NetworkConstants;
 import com.blueboxmc.network.s2c.OpenTardisInfoScreenS2CPacket;
@@ -32,7 +31,7 @@ public class TardisScreenHandler {
 
         String tardisNickname = tardisEntry != null
                 ? tardisEntry.getNickname()
-                : TardisUtil.getDefaultNickname(tardisUUID);
+                : TardisUtil.getDefaultNickname(tardisUUID.toString());
         String ownerUsername = tardisEntry != null
                 ? Bluebox.playerEntryCache.awaitGet(UUID.fromString(tardisEntry.getOwnerUUID())).getUsername()
                 : ""; // can't send null through packet buf
