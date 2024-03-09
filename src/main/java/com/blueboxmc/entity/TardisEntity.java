@@ -2,6 +2,7 @@ package com.blueboxmc.entity;
 
 import com.blueboxmc.handler.TardisEntityHandler;
 import com.blueboxmc.state.DoorState;
+import com.blueboxmc.state.TardisState;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.entity.Entity;
@@ -21,13 +22,15 @@ import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class TardisEntity extends PathAwareEntity {
+public class TardisEntity extends StationaryEntity {
 
     private final TardisEntityHandler tardisEntityHandler;
     private boolean isInitialTick = true;
 
     @Getter @Setter
     private DoorState doorState = DoorState.CLOSED;
+    @Getter @Setter
+    private TardisState tardisState = TardisState.JODIE;
     @Getter @Setter
     private float doorOpenValue = 0;
 
@@ -56,6 +59,7 @@ public class TardisEntity extends PathAwareEntity {
         if (hand == Hand.OFF_HAND) {
             return ActionResult.PASS; // ignore off-hand, otherwise runs twice
         }
+
         if (player instanceof ServerPlayerEntity serverPlayer) {
             tardisEntityHandler.handleRightClickInteraction(serverPlayer);
         }
@@ -77,27 +81,6 @@ public class TardisEntity extends PathAwareEntity {
         }
         this.doorOpenValue = nbt.getFloat("doorOpenValue");
     }
-
-    @Override
-    public boolean cannotDespawn() { return true; }
-
-    @Override
-    public boolean isPersistent() { return true; }
-
-    @Override
-    public boolean canTakeDamage() { return false; }
-
-    @Override
-    public boolean damage(DamageSource source, float amount) { return false; }
-
-    @Override
-    protected void tickCramming() {}
-
-    @Override
-    public void pushAwayFrom(Entity entity) {}
-
-    @Override
-    public boolean isPushable() { return false; }
 
     @Override
     public void onStartedTrackingBy(ServerPlayerEntity player) {

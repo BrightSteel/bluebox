@@ -1,8 +1,4 @@
-package com.blueboxmc.entity.model;
-
-// Made with Blockbench 4.8.3
-// Exported for Minecraft version 1.17 or later with Mojang mappings
-// Paste this class into your mod and generate all required imports
+package com.blueboxmc.entity.model.tardis;
 
 import com.blueboxmc.entity.TardisEntity;
 import net.minecraft.client.model.*;
@@ -10,7 +6,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class TardisEntityModel extends EntityModel<TardisEntity> {
+public class JodieTardisModel extends EntityModel<TardisEntity> {
     private final ModelPart rdoor;
     private final ModelPart ldoor;
     private final ModelPart body;
@@ -20,7 +16,7 @@ public class TardisEntityModel extends EntityModel<TardisEntity> {
     private static final float[] ldoorPivot = new float[]{-11.0F, 22.0F, -11.0F};
     private static final float[] rdoorPivot = new float[]{11.0F, 22.0F, -11.0F};
 
-    public TardisEntityModel(ModelPart root) {
+    public JodieTardisModel(ModelPart root) {
         this.rdoor = root.getChild("rdoor");
         this.ldoor = root.getChild("ldoor");
         this.body = root.getChild("body");
@@ -28,7 +24,7 @@ public class TardisEntityModel extends EntityModel<TardisEntity> {
         this.signandlamp = root.getChild("signandlamp");
     }
 
-    public static TexturedModelData getTexturedModelData() {
+    public static TexturedModelData createModelData() {
         ModelData meshdefinition = new ModelData();
         ModelPartData partdefinition = meshdefinition.getRoot();
 
