@@ -1,27 +1,16 @@
 package com.blueboxmc.entity.model.tardis;
 
-
-import com.blueboxmc.entity.TardisEntity;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class CapaldiTardisModel extends EntityModel<TardisEntity> {
+public class CapaldiTardisModel extends TardisModel {
 
-    private final ModelPart ldoor;
-    private final ModelPart rdoor;
     private final ModelPart bb_main;
 
     public CapaldiTardisModel(ModelPart root) {
-        this.ldoor = root.getChild("ldoor");
-        this.rdoor = root.getChild("rdoor");
+        super(root);
         this.bb_main = root.getChild("bb_main");
-    }
-
-    @Override
-    public void setAngles(TardisEntity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
-
     }
 
     @Override
@@ -35,8 +24,8 @@ public class CapaldiTardisModel extends EntityModel<TardisEntity> {
         ModelData meshdefinition = new ModelData();
         ModelPartData modelPartData = meshdefinition.getRoot();
 
-        ModelPartData ldoor = modelPartData.addChild("ldoor", ModelPartBuilder.create().uv(70, 113).cuboid(1.0F, -45.0F, -1.0F, 11.0F, 44.0F, 1.0F, new Dilation(0.0F))
-                .uv(0, 12).cuboid(9.0F, -28.0F, -2.0F, 1.0F, 2.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(-12.0F, 22.0F, -13.0F));
+        ModelPartData ldoor = modelPartData.addChild("ldoor", ModelPartBuilder.create().uv(70, 113).cuboid(0.0F, -45.0F, -1.0F, 11.0F, 44.0F, 1.0F, new Dilation(0.0F))
+                .uv(0, 12).cuboid(8.0F, -28.0F, -2.0F, 1.0F, 2.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(-11.0F, 22.0F, -13.0F));
 
         ModelPartData rdoor = modelPartData.addChild("rdoor", ModelPartBuilder.create().uv(46, 93).cuboid(-11.0F, -45.0F, -1.0F, 11.0F, 44.0F, 1.0F, new Dilation(0.0F))
                 .uv(0, 12).cuboid(-10.0F, -28.0F, -2.0F, 1.0F, 2.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(11.0F, 22.0F, -13.0F));

@@ -7,6 +7,7 @@ import com.blueboxmc.database.Tables;
 import com.blueboxmc.database.cache.PlayerEntryCache;
 import com.blueboxmc.database.cache.TardisEntryCache;
 import com.blueboxmc.document.DocumentHandler;
+import com.blueboxmc.entity.DoorEntity;
 import com.blueboxmc.entity.TardisEntity;
 import com.blueboxmc.network.ServerPacketReceivers;
 import lombok.Getter;
@@ -41,6 +42,11 @@ public class Bluebox implements ModInitializer {
 			new Identifier(MODID, "tardis"),
 			FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, TardisEntity::new).dimensions(EntityDimensions.fixed(2f, 3f)).build()
 	);
+	public static final EntityType<DoorEntity> DOOR_ENTITY = Registry.register(
+			Registries.ENTITY_TYPE,
+			new Identifier(MODID, "door"),
+			FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, DoorEntity::new).dimensions(EntityDimensions.fixed(2f, 3f)).build()
+	);
 
 	// db
 	public static DatabaseConnector dbConnector;
@@ -53,6 +59,8 @@ public class Bluebox implements ModInitializer {
 	public void onInitialize() {
 		// attributes are required
 		FabricDefaultAttributeRegistry.register(TARDIS_ENTITY, TardisEntity.createMobAttributes());
+		FabricDefaultAttributeRegistry.register(DOOR_ENTITY, DoorEntity.createMobAttributes());
+
 		ServerPacketReceivers.registerGlobalReceivers();
 
 		ServerLifecycleEvents.SERVER_STARTED.register(this::initializeWithServer);

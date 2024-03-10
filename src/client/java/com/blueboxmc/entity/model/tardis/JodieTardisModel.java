@@ -6,9 +6,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class JodieTardisModel extends EntityModel<TardisEntity> {
-    private final ModelPart rdoor;
-    private final ModelPart ldoor;
+public class JodieTardisModel extends TardisModel {
     private final ModelPart body;
     private final ModelPart walls;
     private final ModelPart signandlamp;
@@ -17,8 +15,7 @@ public class JodieTardisModel extends EntityModel<TardisEntity> {
     private static final float[] rdoorPivot = new float[]{11.0F, 22.0F, -11.0F};
 
     public JodieTardisModel(ModelPart root) {
-        this.rdoor = root.getChild("rdoor");
-        this.ldoor = root.getChild("ldoor");
+        super(root);
         this.body = root.getChild("body");
         this.walls = root.getChild("walls");
         this.signandlamp = root.getChild("signandlamp");
@@ -63,13 +60,6 @@ public class JodieTardisModel extends EntityModel<TardisEntity> {
         ModelPartData cube_r7 = signandlamp.addChild("cube_r7", ModelPartBuilder.create().uv(78, 32).cuboid(-13.0F, -49.0F, -15.0F, 26.0F, 4.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -2.0F, 0.0F, 0.0F, -1.5708F, 0.0F));
 
         return TexturedModelData.of(meshdefinition, 256, 256);
-    }
-
-    @Override
-    public void setAngles(TardisEntity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
-//        var t = (float) entity.getWorld().getTime() / 8 % 360;
-        ldoor.setTransform(ModelTransform.of(ldoorPivot[0], ldoorPivot[1], ldoorPivot[2], 0, -entity.getDoorOpenValue(), 0));
-        rdoor.setTransform(ModelTransform.of(rdoorPivot[0], rdoorPivot[1], rdoorPivot[2], 0, entity.getDoorOpenValue(), 0));
     }
 
     @Override

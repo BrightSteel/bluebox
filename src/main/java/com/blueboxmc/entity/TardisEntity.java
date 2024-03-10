@@ -1,28 +1,22 @@
 package com.blueboxmc.entity;
 
+import com.blueboxmc.entity.type.Door;
+import com.blueboxmc.entity.type.PortalDoor;
 import com.blueboxmc.handler.TardisEntityHandler;
 import com.blueboxmc.state.DoorState;
-import com.blueboxmc.state.TardisState;
+import com.blueboxmc.state.TardisType;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
-public class TardisEntity extends StationaryEntity {
+public class TardisEntity extends StationaryEntity implements PortalDoor {
 
     private final TardisEntityHandler tardisEntityHandler;
     private boolean isInitialTick = true;
@@ -30,7 +24,7 @@ public class TardisEntity extends StationaryEntity {
     @Getter @Setter
     private DoorState doorState = DoorState.CLOSED;
     @Getter @Setter
-    private TardisState tardisState = TardisState.JODIE;
+    private TardisType tardisType = TardisType.CAPALDI;
     @Getter @Setter
     private float doorOpenValue = 0;
 
@@ -40,13 +34,23 @@ public class TardisEntity extends StationaryEntity {
     }
 
     @Override
+    public void closePortal() {
+        tardisEntityHandler.removePortals();
+    }
+
+    @Override
+    public void openPortal() {
+        tardisEntityHandler.openPortal();
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (isInitialTick && !getWorld().isClient) {
             tardisEntityHandler.onSpawn();
             isInitialTick = false;
         }
-        tardisEntityHandler.handleDoorState();
+        tardisEntityHandler.tickDoor();
     }
 
     @Override
@@ -64,6 +68,20 @@ public class TardisEntity extends StationaryEntity {
             tardisEntityHandler.handleRightClickInteraction(serverPlayer);
         }
         return ActionResult.PASS;
+    }
+
+    // for opening door externally, ie from interior
+    public void openDoor() {
+        // do nothing if already open/opening
+        if (doorState == DoorState.CLOSED || doorState == DoorState.CLOSING) {
+            tardisEntityHandler.openDoor();
+        }
+    }
+
+    public void closeDoor() {
+        if (doorState == DoorState.OPEN || doorState == DoorState.OPENING) {
+            tardisEntityHandler.closeDoor();
+        }
     }
 
     @Override
@@ -85,5 +103,10 @@ public class TardisEntity extends StationaryEntity {
     @Override
     public void onStartedTrackingBy(ServerPlayerEntity player) {
         tardisEntityHandler.sendUpdatePacket(player);
+    }
+
+    @Override
+    public void sendObservedUpdatePacket() {
+        tardisEntityHandler.sendObservedUpdatePacket();
     }
 }

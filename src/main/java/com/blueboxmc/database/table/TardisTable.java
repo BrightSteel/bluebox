@@ -2,8 +2,10 @@ package com.blueboxmc.database.table;
 
 import com.blueboxmc.Bluebox;
 import com.blueboxmc.database.entry.TardisEntry;
+import com.blueboxmc.database.entry.UUIDEntry;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class TardisTable extends Table {
     // todo for mysql - need AUTO_INCREMENT keyword
@@ -58,7 +60,6 @@ public class TardisTable extends Table {
     }
 
     public boolean updateInterior(TardisEntry tardisEntry) {
-        System.out.println("Updating: " + tardisEntry);
         try {
             String update = """
                         UPDATE tardis SET
@@ -78,5 +79,15 @@ public class TardisTable extends Table {
             return false;
         }
         return true;
+    }
+
+    public UUIDEntry getTardisUUIDFromInterior(int posZ) {
+        try {
+            String query = "SELECT entity_uuid FROM tardis WHERE interior_bound_min <= ? AND interior_bound_max >= ? LIMIT 1";
+            return (UUIDEntry) Bluebox.dbConnector.querySingleton(query, new UUIDEntry(), posZ, posZ);
+        } catch (SQLException e) {
+            logError("select", e);
+            return null;
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.blueboxmc.state;
 
-public enum TardisState {
+public enum TardisType {
     JODIE,
     CAPALDI
 }

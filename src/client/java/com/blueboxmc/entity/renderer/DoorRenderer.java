@@ -1,9 +1,11 @@
 package com.blueboxmc.entity.renderer;
 
 import com.blueboxmc.Bluebox;
-import com.blueboxmc.entity.TardisEntity;
+import com.blueboxmc.entity.DoorEntity;
+import com.blueboxmc.entity.model.door.DoorModel;
+import com.blueboxmc.entity.model.door.DoorModelFactory;
 import com.blueboxmc.entity.model.tardis.TardisModel;
-import com.blueboxmc.entity.model.tardis.TardisModelFactory;
+import com.blueboxmc.state.DoorType;
 import com.blueboxmc.state.TardisType;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.render.OverlayTexture;
@@ -19,27 +21,27 @@ import net.minecraft.util.math.RotationAxis;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class TardisRenderer extends EntityRenderer<TardisEntity> {
+public class DoorRenderer extends EntityRenderer<DoorEntity> {
 
-    // tardisState -> model
-    private final Map<TardisType, TardisModel> stateToModelMap;
+    // doorType -> model
+    private final Map<DoorType, DoorModel> stateToModelMap;
 
-    public TardisRenderer(EntityRendererFactory.Context context) {
+    public DoorRenderer(EntityRendererFactory.Context context) {
         super(context);
-        TardisModelFactory tardisModelFactory = new TardisModelFactory(context);
+        DoorModelFactory doorFactory = new DoorModelFactory(context);
         this.stateToModelMap = Stream
-                .of(TardisType.values())
+                .of(DoorType.values())
                 .collect(ImmutableMap.toImmutableMap(
-                        tardisState -> tardisState,
-                        tardisModelFactory::createTardisModel
+                        doorType -> doorType,
+                        doorFactory::createDoorModel
                 ));
     }
 
     // manually render entity, so we can change the model depending on state
     @Override
-    public void render(TardisEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
+    public void render(DoorEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
         matrices.push();
-        TardisModel model = stateToModelMap.get(entity.getTardisType());
+        DoorModel model = stateToModelMap.get(entity.getDoorType());
         VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(getTexture(entity)));
 
         // livingEntity transformations - required, or it renders upside down and facing wrong way
@@ -54,8 +56,8 @@ public class TardisRenderer extends EntityRenderer<TardisEntity> {
     }
 
     @Override
-    public Identifier getTexture(TardisEntity entity) {
-        String type = entity.getTardisType().name().toLowerCase();
-        return new Identifier(Bluebox.MODID, String.format("textures/entity/tardis/%s.png", type));
+    public Identifier getTexture(DoorEntity entity) {
+        String type = entity.getDoorType().name().toLowerCase();
+        return new Identifier(Bluebox.MODID, String.format("textures/entity/door/%s.png", type));
     }
 }

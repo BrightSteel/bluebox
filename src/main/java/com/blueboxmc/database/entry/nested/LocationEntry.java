@@ -1,9 +1,14 @@
 package com.blueboxmc.database.entry.nested;
 
+import com.blueboxmc.world.Location;
 import com.google.gson.Gson;
 import lombok.*;
 import lombok.experimental.Accessors;
 import net.minecraft.entity.Entity;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Identifier;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -26,5 +31,11 @@ public class LocationEntry extends JsonEntry {
                 .setYaw(entity.getYaw())
                 .setPitch(entity.getPitch())
                 .setWorld(entity.getWorld().getDimensionKey().getValue().toString());
+    }
+
+    public Location toLocation(MinecraftServer server) {
+        return new Location(x, y, z, yaw, pitch,
+                server.getWorld(RegistryKey.of(RegistryKeys.WORLD, new Identifier(world)))
+        );
     }
 }

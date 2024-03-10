@@ -3,6 +3,7 @@ package com.blueboxmc;
 import com.blueboxmc.block.BlueBoxBlocks;
 import com.blueboxmc.block.type.BaseBlock;
 import com.blueboxmc.entity.model.BlueboxModelLayers;
+import com.blueboxmc.entity.renderer.DoorRenderer;
 import com.blueboxmc.entity.renderer.TardisRenderer;
 import com.blueboxmc.network.ClientPacketReceivers;
 import com.blueboxmc.schedule.ClientScheduleHandler;
@@ -23,6 +24,7 @@ public class BlueboxClient implements ClientModInitializer {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 		BlueboxModelLayers.registerModelLayers();
 		EntityRendererRegistry.register(Bluebox.TARDIS_ENTITY, TardisRenderer::new);
+		EntityRendererRegistry.register(Bluebox.DOOR_ENTITY, DoorRenderer::new);
 
 		initBlockRenderLayers();
 

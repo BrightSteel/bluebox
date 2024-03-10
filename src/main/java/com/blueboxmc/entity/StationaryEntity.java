@@ -5,11 +5,18 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.world.World;
+import qouteall.imm_ptl.core.api.ImmPtlEntityExtension;
 
-public class StationaryEntity extends PathAwareEntity {
+public class StationaryEntity extends PathAwareEntity implements ImmPtlEntityExtension {
 
     protected StationaryEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
         super(entityType, world);
+    }
+
+    @Override
+    public boolean imm_ptl_canTeleportThroughPortal(Entity portal) {
+        // prevent from going through portals
+        return false;
     }
 
     @Override

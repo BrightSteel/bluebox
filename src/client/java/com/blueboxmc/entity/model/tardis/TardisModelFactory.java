@@ -1,11 +1,9 @@
 package com.blueboxmc.entity.model.tardis;
 
-import com.blueboxmc.entity.TardisEntity;
 import com.blueboxmc.entity.model.BlueboxModelLayers;
-import com.blueboxmc.state.TardisState;
+import com.blueboxmc.state.TardisType;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 
 public class TardisModelFactory {
@@ -16,12 +14,12 @@ public class TardisModelFactory {
         this.context = context;
     }
 
-    public EntityModel<TardisEntity> createTardisModel(TardisState tardisState) {
-        EntityModelLayer modelLayer = BlueboxModelLayers.getTardisModelLayer(tardisState);
+    public TardisModel createTardisModel(TardisType tardisType) {
+        EntityModelLayer modelLayer = BlueboxModelLayers.getTardisModelLayer(tardisType);
         ModelPart root = context.getPart(modelLayer);
 
-        EntityModel<TardisEntity> model;
-        switch (tardisState) {
+        TardisModel model;
+        switch (tardisType) {
             case CAPALDI -> model = new CapaldiTardisModel(root);
             default -> model = new JodieTardisModel(root);
         }

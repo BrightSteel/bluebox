@@ -1,5 +1,6 @@
 package com.blueboxmc.network;
 
+import com.blueboxmc.network.s2c.DoorEntityS2CPacket;
 import com.blueboxmc.network.s2c.OpenTardisInfoScreenS2CPacket;
 import com.blueboxmc.network.s2c.TardisEntityS2CPacket;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -14,6 +15,7 @@ public class ClientPacketReceivers {
 
     public static void registerGlobalReceivers() {
         ClientPlayNetworking.registerGlobalReceiver(NetworkConstants.TARDIS_ENTITY_S2C, new PacketReceiver(TardisEntityS2CPacket::new));
+        ClientPlayNetworking.registerGlobalReceiver(NetworkConstants.DOOR_ENTITY_S2C, new PacketReceiver(DoorEntityS2CPacket::new));
         ClientPlayNetworking.registerGlobalReceiver(NetworkConstants.OPEN_TARDIS_INFO_SCREEN_S2C, new PacketReceiver(OpenTardisInfoScreenS2CPacket::new));
     }
 

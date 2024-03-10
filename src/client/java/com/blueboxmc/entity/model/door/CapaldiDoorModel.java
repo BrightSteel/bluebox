@@ -3,22 +3,18 @@ package com.blueboxmc.entity.model.door;
 import com.blueboxmc.entity.TardisEntity;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class CapaldiDoorModel extends EntityModel<TardisEntity> {
-    
-    private final ModelPart ldoor;
-    private final ModelPart rdoor;
+public class CapaldiDoorModel extends DoorModel {
+
     private final ModelPart bb_main;
 
     public CapaldiDoorModel(ModelPart root) {
-        this.ldoor = root.getChild("ldoor");
-        this.rdoor = root.getChild("rdoor");
+        super(root);
         this.bb_main = root.getChild("bb_main");
     }
 
-    public static TexturedModelData createBodyLayer() {
+    public static TexturedModelData createModelLayer() {
         ModelData modelData = new ModelData();
         ModelPartData modelPartData = modelData.getRoot();
 
@@ -46,11 +42,6 @@ public class CapaldiDoorModel extends EntityModel<TardisEntity> {
                 .uv(113, 119).cuboid(-13.0F, -47.0F, -8.5F, 2.0F, 48.0F, 2.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -1.0F, -0.5F, 0.0F, 3.1416F, 0.0F));
 
         return TexturedModelData.of(modelData, 256, 256);
-    }
-
-    @Override
-    public void setAngles(TardisEntity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
-
     }
 
     @Override
